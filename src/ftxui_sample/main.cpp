@@ -9,6 +9,7 @@
 #include <ftxui/component/captured_mouse.hpp>// for ftxui
 #include <ftxui/component/component.hpp>// for Slider
 #include <ftxui/component/screen_interactive.hpp>// for ScreenInteractive
+#include <shiny_engine/sample_library.hpp>
 #include <spdlog/spdlog.h>
 
 #include <lefticus/tools/non_promoting_ints.hpp>
@@ -18,8 +19,8 @@
 // the source template at `configured_files/config.hpp.in`.
 #include <internal_use_only/config.hpp>
 
-template<std::size_t Width, std::size_t Height> struct GameBoard
-{
+template<std::size_t Width, std::size_t Height>
+struct GameBoard {
   static constexpr std::size_t width = Width;
   static constexpr std::size_t height = Height;
 
@@ -31,8 +32,7 @@ template<std::size_t Width, std::size_t Height> struct GameBoard
   std::string &get_string(std::size_t cur_x, std::size_t cur_y) { return strings.at(cur_x).at(cur_y); }
 
 
-  void set(std::size_t cur_x, std::size_t cur_y, bool new_value)
-  {
+  void set(std::size_t cur_x, std::size_t cur_y, bool new_value) {
     get(cur_x, cur_y) = new_value;
 
     if (new_value) {
@@ -42,8 +42,7 @@ template<std::size_t Width, std::size_t Height> struct GameBoard
     }
   }
 
-  void visit(auto visitor)
-  {
+  void visit(auto visitor) {
     for (std::size_t cur_x = 0; cur_x < width; ++cur_x) {
       for (std::size_t cur_y = 0; cur_y < height; ++cur_y) { visitor(cur_x, cur_y, *this); }
     }
@@ -53,13 +52,12 @@ template<std::size_t Width, std::size_t Height> struct GameBoard
 
   [[nodiscard]] bool &get(std::size_t cur_x, std::size_t cur_y) { return values.at(cur_x).at(cur_y); }
 
-  GameBoard()
-  {
+  GameBoard() {
+    // auto x = factorial(100);
     visit([](const auto cur_x, const auto cur_y, auto &gameboard) { gameboard.set(cur_x, cur_y, true); });
   }
 
-  void update_strings()
-  {
+  void update_strings() {
     for (std::size_t cur_x = 0; cur_x < width; ++cur_x) {
       for (std::size_t cur_y = 0; cur_y < height; ++cur_y) { set(cur_x, cur_y, get(cur_x, cur_y)); }
     }
@@ -67,8 +65,7 @@ template<std::size_t Width, std::size_t Height> struct GameBoard
 
   void toggle(std::size_t cur_x, std::size_t cur_y) { set(cur_x, cur_y, !get(cur_x, cur_y)); }
 
-  void press(std::size_t cur_x, std::size_t cur_y)
-  {
+  void press(std::size_t cur_x, std::size_t cur_y) {
     ++move_count;
     toggle(cur_x, cur_y);
     if (cur_x > 0) { toggle(cur_x - 1, cur_y); }
@@ -77,8 +74,7 @@ template<std::size_t Width, std::size_t Height> struct GameBoard
     if (cur_y < height - 1) { toggle(cur_x, cur_y + 1); }
   }
 
-  [[nodiscard]] bool solved() const
-  {
+  [[nodiscard]] bool solved() const {
     for (std::size_t cur_x = 0; cur_x < width; ++cur_x) {
       for (std::size_t cur_y = 0; cur_y < height; ++cur_y) {
         if (!get(cur_x, cur_y)) { return false; }
@@ -90,8 +86,7 @@ template<std::size_t Width, std::size_t Height> struct GameBoard
 };
 
 
-void consequence_game()
-{
+void consequence_game() {
   auto screen = ftxui::ScreenInteractive::TerminalOutput();
 
   GameBoard<3, 3> game_board;
@@ -163,31 +158,26 @@ void consequence_game()
   screen.Loop(renderer);
 }
 
-struct Color
-{
+struct Color {
   lefticus::tools::uint_np8_t R{ static_cast<std::uint8_t>(0) };
   lefticus::tools::uint_np8_t G{ static_cast<std::uint8_t>(0) };
   lefticus::tools::uint_np8_t B{ static_cast<std::uint8_t>(0) };
 };
 
 // A simple way of representing a bitmap on screen using only characters
-struct Bitmap : ftxui::Node
-{
+struct Bitmap : ftxui::Node {
   Bitmap(std::size_t width, std::size_t height)// NOLINT same typed parameters adjacent to each other
-    : width_(width), height_(height)
-  {}
+    : width_(width), height_(height) {}
 
   Color &at(std::size_t cur_x, std::size_t cur_y) { return pixels.at(width_ * cur_y + cur_x); }
 
-  void ComputeRequirement() override
-  {
+  void ComputeRequirement() override {
     requirement_ = ftxui::Requirement{
       .min_x = static_cast<int>(width_), .min_y = static_cast<int>(height_ / 2), .selected_box{ 0, 0, 0, 0 }
     };
   }
 
-  void Render(ftxui::Screen &screen) override
-  {
+  void Render(ftxui::Screen &screen) override {
     for (std::size_t cur_x = 0; cur_x < width_; ++cur_x) {
       for (std::size_t cur_y = 0; cur_y < height_ / 2; ++cur_y) {
         auto &pixel = screen.PixelAt(box_.x_min + static_cast<int>(cur_x), box_.y_min + static_cast<int>(cur_y));
@@ -213,8 +203,7 @@ private:
   std::vector<Color> pixels = std::vector<Color>(width_ * height_, Color{});
 };
 
-void game_iteration_canvas()
-{
+void game_iteration_canvas() {
   // this should probably have a `bitmap` helper function that does what cur_you expect
   // similar to the other parts of FTXUI
   auto bm = std::make_shared<Bitmap>(50, 50);// NOLINT magic numbers
@@ -310,10 +299,10 @@ void game_iteration_canvas()
 }
 
 // NOLINTNEXTLINE(bugprone-exception-escape)
-int main(int argc, const char **argv)
-{
+int main(int argc, const char **argv) {
   try {
-    CLI::App app{ fmt::format("{} version {}", shiny_engine::cmake::project_name, shiny_engine::cmake::project_version) };
+    CLI::App app{ fmt::format(
+      "{} version {}", shiny_engine::cmake::project_name, shiny_engine::cmake::project_version) };
 
     std::optional<std::string> message;
     app.add_option("-m,--message", message, "A message to print back out");
@@ -343,7 +332,5 @@ int main(int argc, const char **argv)
       game_iteration_canvas();
     }
 
-  } catch (const std::exception &e) {
-    spdlog::error("Unhandled exception in main: {}", e.what());
-  }
+  } catch (const std::exception &e) { spdlog::error("Unhandled exception in main: {}", e.what()); }
 }

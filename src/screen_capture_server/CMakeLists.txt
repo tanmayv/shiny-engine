@@ -1,20 +1,16 @@
-add_executable(intro main.cpp)
+add_executable(screen_capture_server main.cpp)
 
 target_link_libraries(
-  intro
+  screen_capture_server
   PRIVATE shiny_engine::shiny_engine_options
           shiny_engine::shiny_engine_warnings)
 
 target_link_system_libraries(
-  intro
+  screen_capture_server
   PRIVATE
-          CLI11::CLI11
           fmt::fmt
+          absl::base
           spdlog::spdlog
-          lefticus::tools
-          shiny_engine::sample_library
-          ftxui::screen
-          ftxui::dom
-          ftxui::component)
+          )
 
 target_include_directories(intro PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")

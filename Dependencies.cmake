@@ -40,4 +40,8 @@ function(shiny_engine_setup_dependencies)
     cpmaddpackage("gh:lefticus/tools#update_build_system")
   endif()
 
+  if(NOT TARGET absl::base)
+    cpmaddpackage("gh:abseil/abseil-cpp#20230802.0")
+  endif()
+
 endfunction()

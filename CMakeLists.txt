@@ -104,7 +104,7 @@ include(cmake/PackageProject.cmake)
 # we know we want to ship
 shiny_engine_package_project(
   TARGETS
-  intro
+  screen_capture_server
   shiny_engine_options
   shiny_engine_warnings
   # FIXME: this does not work! CK
