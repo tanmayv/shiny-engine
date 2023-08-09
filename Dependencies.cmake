@@ -43,5 +43,5 @@ function(shiny_engine_setup_dependencies)
   if(NOT TARGET absl::base)
     cpmaddpackage("gh:abseil/abseil-cpp#20230802.0")
   endif()
-
+  find_package(FFMPEG 6.0 REQUIRED COMPONENTS avcodec)
 endfunction()

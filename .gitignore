@@ -3,6 +3,8 @@ build/
 out/
 cmake-build-*/
 conan-cache/
+*.mp4
+*.mov
 
 # User spesific settings
 CMakeUserPresets.json

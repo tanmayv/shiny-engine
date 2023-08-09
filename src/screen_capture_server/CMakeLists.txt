@@ -10,7 +10,11 @@ target_link_system_libraries(
   PRIVATE
           fmt::fmt
           absl::base
+          absl::strings
           spdlog::spdlog
+          FFMPEG::avcodec
+          FFMPEG::avutil
+          FFMPEG::avformat
           )
 
 target_include_directories(intro PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
