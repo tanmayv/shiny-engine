@@ -11,10 +11,6 @@ extern "C" {
 }
 
 namespace {
-// template<typename... Params>
-// void spdlog::info(const Params &&...params) {
-//   spdlog::info(std::forward<Params>(params)...);
-// }
 #pragma clang diagnostic push
 #pragma GCC diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -33,12 +29,9 @@ void save_gray_frame(std::span<uint8_t> buf, int wrap, int xsize, int ysize, con
   // portable graymap format -> https://en.wikipedia.org/wiki/Netpbm_format#PGM_example
   // fprintf(f, "P5\n%d %d\n%d\n", xsize, ysize, 255);
 
-  // writing line by line
-  // const std::string header = fmt::format("P5\n{} {}\n{}\n", xsize, ysize, 255);
   const int kByte = 255;
-  /* NOLINT(cppcoreguidelines-pro-type-vararg, hicpp-vararg) */
-  (void)fprintf(file.get(), "P5\n%d %d\n%d\n", xsize, ysize, kByte); // NOLINT: Can't do shit
-  // fprintf(file.get(), header.c_str());
+  fprintf(file.get(), "P5\n%d %d\n%d\n", xsize, ysize, kByte); // NOLINT: Can't do shit
+  // writing line by line
   for (size_t i = 0; i < size_t{ ysize }; i++) {
     auto size = fwrite(&buf[i * wrap], 1, xsize, file.get());
     if (size == 0) { spdlog::info("Wrote {} bytes to {}", size, filename); }
@@ -51,7 +44,6 @@ int decode_packet(AVPacket *pPacket, AVCodecContext *pCodecContext, AVFrame *pFr
   int response = avcodec_send_packet(pCodecContext, pPacket);
 
   if (response < 0) {
-
     spdlog::info("Error while sending a packet to the decoder: {}", error_string(response));
     return response;
   }
@@ -274,7 +266,5 @@ int main(int argc, char **argv) {
 
 #pragma clang diagnostic pop
 #pragma GCC diagnostic pop
-
-
   return 0;
 }
