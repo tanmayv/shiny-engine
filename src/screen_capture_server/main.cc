@@ -13,12 +13,15 @@
 
 
 int main() {
+    auto last = std::chrono::system_clock::now();
     auto mons = SL::Screen_Capture::GetMonitors();
     auto framgrabber =
       SL::Screen_Capture::CreateCaptureConfiguration([&]() { return mons; })
-        ->onNewFrame([&](const SL::Screen_Capture::Image &img, const SL::Screen_Capture::Monitor &monitor) {
-          fmt::print("IMG {}", img.isContiguous);
-          fmt::print("Monitor {}", monitor.Name);
+        ->onNewFrame([&](const SL::Screen_Capture::Image& img, const SL::Screen_Capture::Monitor& ) {
+          const auto current = std::chrono::system_clock::now();
+          std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(current - last).count()
+                    << " milliseconds\n";
+          last = current;
         })
         ->start_capturing();
     constexpr int kWaitTime = 100;

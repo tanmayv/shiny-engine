@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.21)
 # manual dependency management
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
+set(shiny_engine_WARNINGS_AS_ERRORS OFF)
 
 # Only set the cxx_standard if it is not set by someone else
 if (NOT DEFINED CMAKE_CXX_STANDARD)
