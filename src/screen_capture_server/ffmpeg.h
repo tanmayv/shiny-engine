@@ -6,26 +6,43 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavutil/imgutils.h>
 }
-namespace ffmpeg {
 
-class FfmpegDecoder {
-public:
-  FfmpegDecoder(const AVCodec *codec, AVCodecContext *codec_context, AVFrame *frame)
-    : codec_(codec), codec_context_(codec_context), frame_(frame) {}
+// template <typename T, typename... Types>
+// void CreatePipeline()
+// {
 
-  static absl::StatusOr<FfmpegDecoder> Create(AVCodecID codec_id);
+// };
 
-  ~FfmpegDecoder() {
-    av_frame_free(&frame_);
-    avcodec_close(codec_context_);
-  }
 
-  template<typename Function>
-  void DecodeStreamData(std::span<uint8_t> data, Function callback);
 
-private:
-  const AVCodec *codec_;
-  AVCodecContext *codec_context_;
-  AVFrame *frame_;
-};
-}// namespace ffmpeg
+// class Decoder {
+//     public:
+//     char* Process(char*);
+// };
+
+// class FramesReader {
+//     public:
+//     char* Process(std::string filename);
+// };
+
+// auto display = [](char* ) -> void {};
+
+
+// CreatePipeline<Decoder, FramesReader>();
+
+// int main() {
+//     return 0;
+// }
+
+// template<typename FirstStage, typename... Stages, typename LastStage>
+// class Pipeline {
+//     public:
+//     void Add(std::tuple<std::string_view stage_name, std::variant<Stages>> stage) {
+//        std::cout << "Adding stage " << stage_name << '\n';
+//        stages.push_back(std::move(stage));
+//     }
+
+//     decltype(LastStage::Step()) 
+//     private:
+//     std::vector<std::variant<FirstStage, Stages, LastStage>> stages;
+// }
