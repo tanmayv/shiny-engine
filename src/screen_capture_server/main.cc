@@ -13,6 +13,7 @@
 #include <chrono>
 #include <span>
 #include <fstream>
+#include "ffmpeg.h"
 
 extern "C" {
 #include <libavcodec/avcodec.h>

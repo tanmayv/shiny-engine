@@ -1,4 +1,4 @@
-add_executable(screen_capture_server main.cc ffmpeg.cc)
+add_executable(screen_capture_server ffmpeg.cc)
 
 if(WIN32)
 	set(${PROJECT_NAME}_PLATFORM_LIBS Dwmapi)
